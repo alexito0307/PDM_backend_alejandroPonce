@@ -28,9 +28,10 @@ def registrar():
 
   #Validacion
   if not nombre or not email or not password:
-    return jsonify({"error": "Faltan datos datos"}), 400
+    return jsonify({"error": "Faltan datos"}), 400
   #Obtener el cursor
   cursor = get_db_connection()
+  cursor.execute("SELECT DATABASE()")
 
   try: 
     # Verificamos que el usuario no exista
@@ -43,8 +44,7 @@ def registrar():
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     # Insertar el registro del nuevo usuario en la base de datos
-    cursor.execute('''INSERT INTO USUARIOS (nombre, email, password) values (%s,%s,%s)''',
-                   (nombre, email, hashed_password,))
+    cursor.execute('''INSERT INTO usuarios (nombre, email, password) values (%s,%s,%s)''', (nombre, email, hashed_password,))
     cursor.connection.commit()
     return jsonify({"message": "Usuario creado correctamente"})
   except Exception as e:
